@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в дневник</title>
+    <style>
+        /* ============================================================
+           ПОДКЛЮЧАЕМ ШРИФТЫ
+           ============================================================ */
+        @font-face {
+            font-family: 'GWENT';
+            src: url('fonts/GWENT.ttf') format('truetype');
+        }
+        
+        /* ============================================================
+           ГЛОБАЛЬНЫЕ СТИЛИ
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans', 'GWENT', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0f;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* ============================================================
+           ФОН (ВАША КАРТИНКА + ЗАТЕМНЕНИЕ)
+           ============================================================ */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                /* linear-gradient(135deg, rgba(20, 0, 30, 0.85), rgba(5, 0, 10, 0.92)), */
+                url('images/kent.jpg') center/cover no-repeat;
+            z-index: 0;
+        }
+        
+        /* ============================================================
+           ФИОЛЕТОВАЯ ПОДСВЕТКА
+           ============================================================ */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(120, 0, 255, 0.08), transparent 60%),
+                        radial-gradient(ellipse at 70% 80%, rgba(80, 0, 200, 0.06), transparent 50%);
+            z-index: 0;
+            animation: glowPulse 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glowPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        /* ============================================================
+           КОНТЕЙНЕР
+           ============================================================ */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+        }
+        
+        /* ============================================================
+           БЛОК ВХОДА
+           ============================================================ */
+        .login-box {
+            background: rgba(10, 5, 20, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(160, 80, 255, 0.25);
+            border-radius: 24px;
+            padding: 48px 36px;
+            box-shadow: 0 20px 60px rgba(80, 0, 200, 0.3),
+                        inset 0 1px 0 rgba(160, 80, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        /* ============================================================
+           ЗАГОЛОВОК (ШРИФТ GWENT)
+           ============================================================ */
+        .title {
+            font-family: 'GWENT', 'Comic Sans', sans-serif;
+            font-size: 2.4em;
+            text-align: center;
+            color: #d4b0ff;
+            text-shadow: 0 0 30px rgba(160, 80, 255, 0.3);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-family: 'Comic Sans', 'GWENT', sans-serif;
+            font-size: 0.85em;
+            text-align: center;
+            color: rgba(180, 140, 220, 0.6);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+        
+        /* ============================================================
+           ЦИТАТА
+           ============================================================ */
+        .quote {
+            font-family: 'Comic Sans', 'GWENT', sans-serif;
+            font-size: 0.9em;
+            color: rgba(200, 170, 230, 0.7);
+            text-align: center;
+            font-style: italic;
+            line-height: 1.6;
+            padding: 12px 20px;
+            border-left: 2px solid rgba(160, 80, 255, 0.3);
+            margin-bottom: 32px;
+            position: relative;
+        }
+        
+        .quote-author {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.75em;
+            color: rgba(160, 80, 255, 0.5);
+            font-style: normal;
+            letter-spacing: 1px;
+        }
+        
+        /* ============================================================
+           ДЕКОРАТИВНАЯ ЛИНИЯ
+           ============================================================ */
+        .accent-line {
+            width: 60px;
+            height: 2px;
+            margin: 12px auto 18px;
+            background: linear-gradient(90deg, transparent, rgba(160, 80, 255, 0.4), transparent);
+        }
+        
+        /* ============================================================
+           ПОЛЕ ВВОДА С КНОПКОЙ ГЛАЗА
+           ============================================================ */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(160, 80, 255, 0.2);
+            border-radius: 12px;
+            color: #d4b0ff;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            font-size: 1em;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .password-input:focus {
+            border-color: rgba(160, 80, 255, 0.6);
+            box-shadow: 0 0 25px rgba(160, 80, 255, 0.1);
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        /* ============================================================
+           КНОПКА-ГЛАЗ
+           ============================================================ */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(160, 80, 255, 0.5);
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color 0.3s ease;
+            font-family: 'Comic Sans', sans-serif;
+            line-height: 1;
+        }
+        
+        .toggle-password:hover {
+            color: rgba(160, 80, 255, 0.9);
+        }
+        
+        /* ============================================================
+           ЧЕКБОКС "ЗАПОМНИТЬ МЕНЯ"
+           ============================================================ */
+        .remember-me-wrapper {
+            display: flex;
+            align-items: center;
+            margin-top: 12px;
+            gap: 10px;
+        }
+        
+        .remember-me-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #6a1bb0;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .remember-me-wrapper label {
+            font-family: 'Comic Sans', 'GWENT', sans-serif;
+            color: rgba(180, 140, 220, 0.6);
+            font-size: 0.85em;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        /* ============================================================
+           КНОПКА ВХОДА
+           ============================================================ */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 16px;
+            background: linear-gradient(135deg, #6a1bb0, #3a0a6a);
+            border: 1px solid rgba(160, 80, 255, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'GWENT', 'Comic Sans', sans-serif;
+            font-size: 1.1em;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px rgba(160, 80, 255, 0.3);
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #7a2bc0, #4a1a7a);
+            box-shadow: 0 0 40px rgba(160, 80, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        /* ============================================================
+           СТАТУС-СООБЩЕНИЯ
+           ============================================================ */
+        .status {
+            font-family: 'Comic Sans', 'GWENT', sans-serif;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.85em;
+            min-height: 24px;
+        }
+        
+        .status.error {
+            color: #ff6b6b;
+        }
+        
+        .status.success {
+            color: #6bff6b;
+        }
+        
+        /* ============================================================
+           СЧЁТЧИК ПОПЫТОК
+           ============================================================ */
+        .attempts {
+            font-family: 'Comic Sans', 'GWENT', sans-serif;
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.75em;
+            color: rgba(180, 140, 220, 0.4);
+            letter-spacing: 1px;
+        }
+        
+        /* ============================================================
+           АНИМАЦИЯ УСПЕШНОГО ВХОДА
+           ============================================================ */
+        @keyframes successFlash {
+            0% { box-shadow: 0 0 0 rgba(160, 80, 255, 0); }
+            50% { box-shadow: 0 0 80px rgba(160, 80, 255, 0.6), 0 0 150px rgba(80, 0, 200, 0.3); }
+            100% { box-shadow: 0 0 0 rgba(160, 80, 255, 0); }
+        }
+        
+        .login-box.success {
+            animation: successFlash 0.8s ease 2;
+            border-color: rgba(160, 80, 255, 0.6);
+        }
+        
+        /* ============================================================
+           АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ
+           ============================================================ */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 32px 20px;
+            }
+            .title {
+                font-size: 1.8em;
+            }
+            .quote {
+                font-size: 0.8em;
+                padding: 8px 12px;
+            }
+            .password-input {
+                padding: 12px 45px 12px 16px;
+                font-size: 0.9em;
+            }
+            .toggle-password {
+                font-size: 1em;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box" id="loginBox">
+            <!-- ЗАГОЛОВОК -->
+            <div class="title">ТАЙНЫЙ ДНЕВНИК</div>
+            <div class="subtitle">✦ ВХОД ТОЛЬКО ДЛЯ СВОИХ ✦</div>
+            
+            <div class="accent-line"></div>
+            
+            <!-- ЦИТАТА -->
+            <div class="quote">
+                "Я не монстр. Я просто человек, который научился скрывать свои следы."
+                <span class="quote-author">— Декстер Морган</span>
+            </div>
+            
+            <!-- ПОЛЕ ПАРОЛЯ С ГЛАЗОМ -->
+            <div class="password-wrapper">
+                <input type="password" class="password-input" id="passwordInput" placeholder="Введите пароль..." autofocus>
+                <button class="toggle-password" id="togglePassword" type="button" aria-label="Показать/скрыть пароль">👁️</button>
+            </div>
+            
+            <!-- ЗАПОМНИТЬ МЕНЯ -->
+            <div class="remember-me-wrapper">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">🔐 Запомнить меня</label>
+            </div>
+            
+            <!-- КНОПКА ВХОДА -->
+            <button class="submit-btn" id="submitBtn">ВОЙТИ</button>
+            
+            <!-- СТАТУС -->
+            <div class="status" id="statusMessage"></div>
+            
+            <!-- СЧЁТЧИК ПОПЫТОК -->
+            <div class="attempts" id="attemptsDisplay">Попыток: 0</div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 1. ЭЛЕМЕНТЫ СТРАНИЦЫ
+        // ============================================================
+        const passwordInput = document.getElementById('passwordInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const attemptsDisplay = document.getElementById('attemptsDisplay');
+        const loginBox = document.getElementById('loginBox');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const rememberCheckbox = document.getElementById('rememberMe');
+        
+        // ============================================================
+        // 2. ГЛАЗ ДЛЯ ПАРОЛЯ
+        // ============================================================
+        let passwordVisible = false;
+        
+        togglePasswordBtn.addEventListener('click', function() {
+            passwordVisible = !passwordVisible;
+            passwordInput.type = passwordVisible ? 'text' : 'password';
+            this.textContent = passwordVisible ? '🙈' : '👁️';
+        });
+        
+        // ============================================================
+        // 3. ФУНКЦИИ ДЛЯ РАБОТЫ С LOCALSTORAGE
+        // ============================================================
+        function setStatus(text, type) {
+            statusMessage.textContent = text;
+            statusMessage.className = 'status';
+            if (type) statusMessage.classList.add(type);
+        }
+        
+        function updateAttemptsDisplay() {
+            const attempts = parseInt(localStorage.getItem('login_attempts')) || 0;
+            attemptsDisplay.textContent = `Попыток: ${attempts}`;
+        }
+        
+        // ============================================================
+        // 4. ПРОВЕРКА ПАРОЛЯ (ВРЕМЕННО БЕЗ БЛОКИРОВКИ)
+        // ============================================================
+        function handleLogin() {
+            const password = passwordInput.value.trim();
+            
+            // ПРОВЕРКА ПАРОЛЯ
+            const isValid = (password === 'Kiberslavok123@2006AxeHuyaks');
+            
+            if (isValid) {
+                // УСПЕШНЫЙ ВХОД
+                localStorage.removeItem('login_attempts');
+                updateAttemptsDisplay();
+                setStatus('✅ Добро пожаловать!', 'success');
+                
+                // Сохраняем пароль, если включено "Запомнить меня"
+                if (rememberCheckbox.checked) {
+                    localStorage.setItem('remembered_password', password);
+                } else {
+                    localStorage.removeItem('remembered_password');
+                }
+                
+                loginBox.classList.add('success');
+                
+                setTimeout(() => {
+                    // ПЕРЕХОД НА ОСНОВНУЮ СТРАНИЦУ
+                    window.location.href = 'diary.html';
+                }, 1200);
+                
+            } else {
+                // НЕУДАЧНАЯ ПОПЫТКА
+                const attempts = (parseInt(localStorage.getItem('login_attempts')) || 0) + 1;
+                localStorage.setItem('login_attempts', attempts.toString());
+                updateAttemptsDisplay();
+                
+                setStatus(`❌ Неверный пароль. Попыток: ${attempts}`, 'error');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // ============================================================
+        // 5. ЗАГРУЗКА ЗАПОМНЕННОГО ПАРОЛЯ
+        // ============================================================
+        function loadRememberedPassword() {
+            const saved = localStorage.getItem('remembered_password');
+            if (saved) {
+                passwordInput.value = saved;
+                rememberCheckbox.checked = true;
+            }
+        }
+        
+        // ============================================================
+        // 6. НАВЕШИВАЕМ СОБЫТИЯ
+        // ============================================================
+        submitBtn.addEventListener('click', handleLogin);
+        
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin();
+            }
+        });
+        
+        // ============================================================
+        // 7. ЗАПУСК
+        // ============================================================
+        loadRememberedPassword();
+        updateAttemptsDisplay();
+        passwordInput.focus();
+        
+        console.log('🔒 Страница входа загружена (без шифрования)');
+    </script>
+</body>
+</html>
