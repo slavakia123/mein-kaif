@@ -21,6 +21,7 @@
             font-family: 'Georgia', serif;
             color: #d4b0ff;
             z-index: 1;
+            padding: 20px;
         }
 
         /* ============================================================
@@ -45,23 +46,171 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             z-index: 1;
+            margin-bottom: 10px;
         }
 
-        p {
+        .subtitle {
             opacity: 0.6;
-            font-size: 1.2em;
+            font-size: 1.1em;
+            margin-bottom: 40px;
             z-index: 1;
         }
 
-        /* Тень для читаемости текста */
-        h1, p {
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        /* ============================================================
+           КНОПКИ-КАРТОЧКИ
+           ============================================================ */
+        .menu-grid {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .menu-card {
+            background: rgba(10, 5, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(160, 80, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px 35px;
+            width: 220px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #d4b0ff;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(160, 80, 255, 0.5);
+            box-shadow: 0 0 40px rgba(160, 80, 255, 0.15);
+            background: rgba(10, 5, 20, 0.8);
+        }
+
+        .menu-card .icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .menu-card .title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-family: 'GWENT', 'Comic Sans', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .menu-card .desc {
+            font-size: 0.8em;
+            opacity: 0.5;
+        }
+
+        /* Кнопка "Галерея" — активная (светится) */
+        .menu-card.active {
+            border-color: rgba(160, 80, 255, 0.6);
+            box-shadow: 0 0 50px rgba(160, 80, 255, 0.2);
+        }
+
+        /* Кнопка "Дневник" и "Ежедневник" — неактивные (приглушённые) */
+        .menu-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .menu-card.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ============================================================
+           АДАПТАЦИЯ ДЛЯ МОБИЛЬНЫХ
+           ============================================================ */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            .menu-grid {
+                gap: 15px;
+                flex-direction: column;
+                align-items: center;
+            }
+            .menu-card {
+                width: 100%;
+                max-width: 280px;
+                padding: 25px 20px;
+            }
+            .menu-card .icon {
+                font-size: 2.2em;
+            }
+        }
+
+        /* ============================================================
+           КНОПКА ВЫХОДА
+           ============================================================ */
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 50, 50, 0.15);
+            border: 1px solid rgba(255, 50, 50, 0.2);
+            border-radius: 12px;
+            color: #ff6b6b;
+            padding: 10px 20px;
+            font-family: 'Comic Sans', sans-serif;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 50, 50, 0.25);
+            border-color: rgba(255, 50, 50, 0.4);
         }
     </style>
 </head>
 <body>
+    <!-- КНОПКА ВЫХОДА -->
+    <a href="index.html" class="logout-btn">🚪 Выйти</a>
+
     <h1>📖 Мой дневник</h1>
-    <p>Добро пожаловать! Здесь будут твои записи.</p>
-    <p style="font-size: 0.8em; opacity: 0.3;">Скоро здесь появится контент</p>
+    <p class="subtitle">Добро пожаловать! Выбери раздел:</p>
+
+    <div class="menu-grid">
+        <!-- ДНЕВНИК (неактивен) -->
+        <div class="menu-card disabled">
+            <span class="icon">📓</span>
+            <div class="title">Дневник</div>
+            <div class="desc">Личные размышления</div>
+            <div style="margin-top: 12px; font-size: 0.7em; opacity: 0.3;">🚧 В разработке</div>
+        </div>
+
+        <!-- ЕЖЕДНЕВНИК (неактивен) -->
+        <div class="menu-card disabled">
+            <span class="icon">📋</span>
+            <div class="title">Ежедневник</div>
+            <div class="desc">Планы и задачи</div>
+            <div style="margin-top: 12px; font-size: 0.7em; opacity: 0.3;">🚧 В разработке</div>
+        </div>
+
+        <!-- ГАЛЕРЕЯ (активна) -->
+        <a href="gallery.html" class="menu-card active">
+            <span class="icon">🖼️</span>
+            <div class="title">Галерея</div>
+            <div class="desc">Картинки, карты и файлы</div>
+            <div style="margin-top: 12px; font-size: 0.7em; opacity: 0.6;">✨ Перейти</div>
+        </a>
+    </div>
+
+    <script>
+        // Просто чтобы показать, что кнопки "Дневник" и "Ежедневник" пока не работают
+        console.log('🔒 Дневник и Ежедневник пока в разработке');
+        console.log('🖼️ Галерея активна!');
+    </script>
 </body>
 </html>
